@@ -128,29 +128,36 @@ class BrainLoller():
         m = 0, 1 # movment vector (starts east)
         ret = ''
         while not self._out(rgb,p):
-            if rgb[p[0]][p[1]] == (255,0,0):
-                ret += '>'
-            if rgb[p[0]][p[1]] == (128,0,0):
-                ret += '<'
-            if rgb[p[0]][p[1]] == (0,255,0):
-                ret += '+'
-            if rgb[p[0]][p[1]] == (0,128,0):
-                ret += '-'
-            if rgb[p[0]][p[1]] == (0,0,255):
-                ret += '.'
-            if rgb[p[0]][p[1]] == (0,0,128):
-                ret += ','
-            if rgb[p[0]][p[1]] == (255,255,0):
-                ret += '['
-            if rgb[p[0]][p[1]] == (128,128,0):
-                ret += ']'
-            if rgb[p[0]][p[1]] == (0,255,255): # turn right
-                m = self._turn(m,"right")
-            if rgb[p[0]][p[1]] == (0,128,128): # turn left
-                m = self._turn(m,"left")
+            o, m = self._logic(rgb[p[0]][p[1]],m)
+            ret += o
             # move
             p = p[0]+m[0], p[1]+m[1]
         return ret
+    
+    def _logic(self,color,m):
+        """Main logic of color commands."""
+        o = ''
+        if color == (255,0,0):
+            o = '>'
+        if color == (128,0,0):
+            o = '<'
+        if color == (0,255,0):
+            o = '+'
+        if color == (0,128,0):
+            o = '-'
+        if color == (0,0,255):
+            o = '.'
+        if color == (0,0,128):
+            o = ','
+        if color == (255,255,0):
+            o = '['
+        if color == (128,128,0):
+            o = ']'
+        if color == (0,255,255): # turn right
+            m = self._turn(m,"right")
+        if color == (0,128,128): # turn left
+            m = self._turn(m,"left")
+        return o, m
     
     def _turn(self,movement_vector,direction):
         """For given direction (left or right) returns turned movement vector."""
@@ -172,41 +179,22 @@ class BrainLoller():
 
 class BrainCopter(BrainLoller):
     """BrainCopter preprocessor."""
-    def _getcode(self,filename):
-        """Parse the given image and outputs a BrainFuck code."""
-        rgb = png(filename).rgb
-        p = 0, 0 # starting point
-        m = 0, 1 # movment vector (starts east)
-        ret = ''
-        while not self._out(rgb,p):
-            command = (-2*rgb[p[0]][p[1]][0] + 3*rgb[p[0]][p[1]][1] + rgb[p[0]][p[1]][2])%11
-            if command == 0:
-                ret += '>'
-            if command == 1:
-                ret += '<'
-            if command == 2:
-                ret += '+'
-            if command == 3:
-                ret += '-'
-            if command == 4:
-                ret += '.'
-            if command == 5:
-                ret += ','
-            if command == 6:
-                ret += '['
-            if command == 7:
-                ret += ']'
-            if command == 8: # turn right
-                m = self._turn(m,"right")
-            if command == 9: # turn left
-                m = self._turn(m,"left")
-            # move
-            p = p[0]+m[0], p[1]+m[1]
-        return ret
-    
+    def _logic(self,color,m):
+        """Main logic of color commands."""
+        o = ''
+        command = (-2*color[0] + 3*color[1] + color[2])%11
+        bf = '><+-.,[]'
+        if command < 8:
+            o = bf[command]
+        if command == 8: # turn right
+            m = self._turn(m,"right")
+        if command == 9: # turn left
+            m = self._turn(m,"left")
+        return o, m
 
 #
 # just for testing
 #
 if __name__ == '__main__':
-    BrainLoller("test_data/HelloWorld.png")
+    #BrainLoller("test_data/HelloWorld.png")
+    BrainCopter("test_data/lk.png")
