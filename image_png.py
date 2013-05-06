@@ -51,9 +51,7 @@ class PngReader():
             p += 4
             
             self.data += [{'head':self.binary[p:p+4],
-                           'length':l,
-                           'data':self.binary[p+4:p+l+4],
-                           'crc':self.binary[p+l+4:p+l+8]}]
+                           'data':self.binary[p+4:p+l+4]}]
             
             p += l+8
         del self.binary
