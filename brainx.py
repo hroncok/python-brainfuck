@@ -16,10 +16,12 @@ class BrainFuck:
         self.memory_pointer = memory_pointer
         self.user_input = ""
         self.code = data
+        self.output = ""
         
         # DEBUG and tests
         # a) output memory
         self.output = ''
+        self._eval(self.code)
     
     #
     # for tests
@@ -27,10 +29,6 @@ class BrainFuck:
     def get_memory(self):
         # Don't forget to change this according to your implementation
         return self.memory
-    
-    def run(self):
-        """Public method to run the code."""
-        self._eval(self.code)
     
     def _eval(self,code):
         """Main part of the interpreter, runs the Brainfuck code."""
@@ -61,6 +59,7 @@ class BrainFuck:
             # print value
             if code[p] == '.':
                 print(chr(self.memory[self.memory_pointer]),end=r'')
+                self.output += chr(self.memory[self.memory_pointer])
             # read value
             if code[p] == ',':
                 self.memory[self.memory_pointer] = ord(self._readchar())
@@ -124,4 +123,9 @@ class BrainCopter():
 # just for testing
 #
 if __name__ == '__main__':
-    BrainFuck('>+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.>>>++++++++[<++++>-]<.>>>++++++++++[<+++++++++>-]<---.<<<<.+++.------.--------.>>+.').run()
+    r"""HelloWorld without \n"""
+    with open( 'test_data/hello2.b', encoding='ascii' ) as stream:
+        data = stream.read()
+    program = BrainFuck(data)
+    print("a")
+    print(program.output)
