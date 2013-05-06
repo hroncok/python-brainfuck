@@ -24,7 +24,7 @@ class PngReader():
         # save the data from the file
         self.binary = open(filepath, mode='rb').read()
         
-        self._check_png()._parse_png()
+        self._parse_png()
             
     def _check_png(self):
         """Checks, if it is PNG, strip theheader."""
@@ -40,6 +40,7 @@ class PngReader():
         return n
     
     def _parse_png(self):
+        self._check_png()
         p = 0
         self.data = []
         while p < len(self.binary):
@@ -53,6 +54,20 @@ class PngReader():
             
             p += l+8
         return self
+    
+    def _get_ihdr():
+        for chunk in self.data:
+            if (chunk['head'] == b'IHDR'):
+                ihdr_data = chunk['data']
+                break
+        
+        return {'width':self._bytes_to_num(ihdr_data[0:4]),
+                'height':self._bytes_to_num(ihdr_data[4:8]),
+                'depth':self._bytes_to_num(ihdr_data[8:9]),
+                'color':self._bytes_to_num(ihdr_data[9:10]),
+                'compress':self._bytes_to_num(ihdr_data[10:11]),
+                'filter':self._bytes_to_num(ihdr_data[11:12]),
+                'interleacing':self._bytes_to_num(ihdr_data[12:13])}
 
 
 #
