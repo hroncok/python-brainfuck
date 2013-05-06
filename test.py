@@ -95,7 +95,7 @@ class TestBrainfuckWithInput(unittest.TestCase):
     
     def setUp(self):
         self.BF = brainx.BrainFuck
-        # skrytí výstupu
+        # hide output
         self.out = sys.stdout
         sys.stdout = FakeStdOut()
     
