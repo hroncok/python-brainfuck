@@ -16,7 +16,7 @@ class PngReader():
     """Class for reading PNG images."""
     
     def __init__(self, filepath):
-        
+        """PNG reader class initialization."""
         # RGB-data from image as a list of rows,
         #   each row contains pixels - triplets of color values
         self.rgb = []
@@ -28,19 +28,21 @@ class PngReader():
         self._save()
             
     def _check_png(self):
-        """Checks, if it is PNG, strip theheader."""
+        """Checks, if it is PNG, strip the header."""
         if (self.binary[:8] != b'\x89PNG\r\n\x1a\n'):
             raise PNGWrongHeaderError()
         self.binary = self.binary[8:]
         return self
     
     def _bytes_to_num(self,bytes):
+        """Convert several bytes to one number."""
         n = 0
         for b in bytes:
             n = n*256 + b
         return n
     
     def _parse_png(self):
+        """From raw binary data, get chunks and save them. Deletes raw data."""
         self._check_png()
         p = 0
         self.data = []
@@ -54,19 +56,21 @@ class PngReader():
                            'crc':self.binary[p+l+4:p+l+8]}]
             
             p += l+8
+        del self.binary
         return self
     
     def _get_size(self):
+        """Reads image width and height from IHDR."""
         for chunk in self.data:
             if (chunk['head'] == b'IHDR'):
                 ihdr = chunk['data']
                 break
         self.width = self._bytes_to_num(ihdr[0:4]);
         self.height = self._bytes_to_num(ihdr[4:8]);
-        print(self.width,self.height)
         return self;
     
     def _get_idat(self):
+        """Gets IDAT and decompresses it."""
         idat = b''
         for chunk in self.data:
             if (chunk['head'] == b'IDAT'):
@@ -75,9 +79,11 @@ class PngReader():
         return zlib.decompress(idat)
     
     def _plus(self,a,b):
+        """Add two pixels together."""
         return ((a[0]+b[0])%256,(a[1]+b[1])%256,(a[2]+b[2])%256)
     
     def _paeth_predictor(self,a,b,c):
+        """Peath predicator from W3C spec."""
         # a = left, b = above, c = upper left
         res = tuple()
         for i in range(0,3):
@@ -98,6 +104,7 @@ class PngReader():
         return res
     
     def _save(self):
+        """Main class method. It saves pixels to 2D array."""
         self._parse_png()._get_size()
         idat = self._get_idat()
 
