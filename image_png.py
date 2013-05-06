@@ -50,8 +50,7 @@ class PngReader():
             l = self._bytes_to_num(self.binary[p:p+4])
             p += 4
             
-            self.data += [{'head':self.binary[p:p+4],
-                           'data':self.binary[p+4:p+l+4]}]
+            self.data += [{'head':self.binary[p:p+4], 'data':self.binary[p+4:p+l+4]}]
             
             p += l+8
         del self.binary
