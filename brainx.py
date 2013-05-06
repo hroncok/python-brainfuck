@@ -58,6 +58,27 @@ class BrainFuck:
             # read value
             if code[p] == ',':
                 code[p] = self._readchar()
+            # start loop
+            if code[p] == '[':
+                # get the code inside loop
+                loopcode = self._getloopcode(code[p:])
+                # run it until zero
+                while self.memory[self.memory_pointer] != 0:
+                    self.run(loopcode)
+                # move the code pointer (closing ] is +1)
+                p += len(loopcode) + 1
+            
+            # move the code pointer
+            p += 1
+    
+    def _getloopcode(self,code):
+        # count [ and ] until thay match
+        end = 1
+        while (code[0:end].count('[') != code[0:end].count(']')):
+            end += 1
+        
+        # return the code without oepening and closing []
+        return code[1:end-1]
     
     def _readchar(self):
         """Read frou previously saved input or from stdin if there is no such thing."""
