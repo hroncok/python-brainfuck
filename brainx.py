@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
+from image_png import PngReader as png
 
 class BrainFuck:
     """Brainfuck interpreter."""
@@ -116,9 +117,48 @@ class BrainLoller():
         """BrainLoller preprocessor initialization."""
         
         # self.data contains decoded Brainfuck code..
-        self.data = ''
+        self.data = self._getcode(filename)
         # ...to give to the Brainfuck interpreter
         self.program = BrainFuck(self.data)
+    
+    def _getcode(self,filename):
+        """Parse the given image and outputs a BrainFuck code."""
+        rgb = png(filename).rgb
+        p = 0, 0 # starting point
+        m = 0, 1 # movment vector (starts east)
+        ret = ''
+        while True:
+            if p[0] == len(rgb) or p[1] == len(rgb[0]) or p[0] < 0 or p[1] < 0: # out of border check
+                break
+            if rgb[p[0]][p[1]] == (255,0,0):
+                ret += '>'
+            if rgb[p[0]][p[1]] == (128,0,0):
+                ret += '<'
+            if rgb[p[0]][p[1]] == (0,255,0):
+                ret += '+'
+            if rgb[p[0]][p[1]] == (0,128,0):
+                ret += '-'
+            if rgb[p[0]][p[1]] == (0,0,255):
+                ret += '.'
+            if rgb[p[0]][p[1]] == (0,0,128):
+                ret += ','
+            if rgb[p[0]][p[1]] == (255,255,0):
+                ret += '['
+            if rgb[p[0]][p[1]] == (128,128,0):
+                ret += ']'
+            if rgb[p[0]][p[1]] == (0,255,255): # turn right
+                if m[0] == 0:
+                    m = m[1], m[0]
+                else:
+                    m = m[1], -m[0]
+            if rgb[p[0]][p[1]] == (0,128,128): # turn left
+                if m[0] != 0:
+                    m = m[1], m[0]
+                else:
+                    m = -m[1], m[0]
+            # move
+            p = p[0]+m[0], p[1]+m[1]
+        return ret
 
 
 class BrainCopter():
@@ -136,9 +176,4 @@ class BrainCopter():
 # just for testing
 #
 if __name__ == '__main__':
-    r"""HelloWorld without \n"""
-    with open( 'test_data/hello2.b', encoding='ascii' ) as stream:
-        data = stream.read()
-    program = BrainFuck(data)
-    print("a")
-    print(program.output)
+    BrainLoller("test_data/HelloWorld.png")
