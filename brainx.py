@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import sys
 
 class BrainFuck:
     """Brainfuck interpreter."""
@@ -14,6 +14,7 @@ class BrainFuck:
         # variables init
         self.memory = memory
         self.memory_pointer = memory_pointer
+        self.user_input = ""
         
         # DEBUG and tests
         # a) output memory
@@ -51,6 +52,23 @@ class BrainFuck:
                 # overflow
                 if self.memory_pointer[p] == -1:
                     self.memory_pointer[p] = 255
+            # print value
+            if code[p] == '.':
+                print(chr(code[p]),end=r'')
+            # read value
+            if code[p] == ',':
+                code[p] = self._readchar()
+    
+    def _readchar(self):
+        """Read frou previously saved input or from stdin if there is no such thing."""
+        # no input defined or left
+        if len(self.user_input) == 0:
+            return ord(sys.stdin.read(1))
+        # still some input
+        else:
+            ret = self.user_input[0]
+            self.user_input = self.user_input[1:]
+            return ret
 
 class BrainLoller():
     """BrainLoller preprocessor."""
