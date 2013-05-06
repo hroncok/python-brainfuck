@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
-from image_png import PngReader as png
-from optparse import OptionParser
 
 class BrainFuck:
     """Brainfuck interpreter."""
-    
     def __init__(self, data, memory=b'\x00', memory_pointer=0):
         """Brainfuck interpreter initialization."""
         
@@ -120,7 +117,6 @@ class BrainFuck:
 
 class BrainLoller():
     """BrainLoller preprocessor."""
-    
     def __init__(self, filename):
         """BrainLoller preprocessor initialization."""
         
@@ -131,6 +127,7 @@ class BrainLoller():
     
     def _getcode(self,filename):
         """Parse the given image and outputs a BrainFuck code."""
+        from image_png import PngReader as png
         rgb = png(filename).rgb
         p = 0, 0 # starting point
         m = 0, 1 # movement vector (starts east)
@@ -204,6 +201,7 @@ class BrainCopter(BrainLoller):
 # just for testing
 #
 if __name__ == '__main__':
+    from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] FILE', version="%prog 0.0")
     parser.add_option('-b', '--brainfuck', action='store_true', dest='fuck',
                         help='use the BrainFuck interpreter [default]')
