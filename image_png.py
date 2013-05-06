@@ -22,7 +22,8 @@ class PngReader():
         self.rgb = []
         
         # save the data from the file
-        self.binary = open(filepath, mode='rb').read()
+        with open(filepath, mode='rb') as f:
+            self.binary = f.read()
         
         self._save()
             
