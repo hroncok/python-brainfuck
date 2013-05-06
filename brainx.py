@@ -42,16 +42,16 @@ class BrainFuck:
                 self.memory_pointer -= 1
             # increase value
             if code[p] == '+':
-                self.memory_pointer[p] += 1
+                self.memory[self.memory_pointer] += 1
                 # overflow
-                if self.memory_pointer[p] == 256:
-                    self.memory_pointer[p] = 0
+                if self.memory[self.memory_pointer] == 256:
+                    self.memory[self.memory_pointer] = 0
             # decrease value
             if code[p] == '-':
-                self.memory_pointer[p] -= 1
+                self.memory[self.memory_pointer] -= 1
                 # overflow
-                if self.memory_pointer[p] == -1:
-                    self.memory_pointer[p] = 255
+                if self.memory[self.memory_pointer] == -1:
+                    self.memory[self.memory_pointer] = 255
             # print value
             if code[p] == '.':
                 print(chr(code[p]),end=r'')
