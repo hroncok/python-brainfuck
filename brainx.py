@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
 
@@ -12,9 +12,10 @@ class BrainFuck:
         self.data = data
         
         # variables init
-        self.memory = memory
+        self.memory = bytearray(memory)
         self.memory_pointer = memory_pointer
         self.user_input = ""
+        self.code = data
         
         # DEBUG and tests
         # a) output memory
@@ -27,7 +28,11 @@ class BrainFuck:
         # Don't forget to change this according to your implementation
         return self.memory
     
-    def eval(self,code):
+    def run(self):
+        """Public method to run the code."""
+        self._eval(self.code)
+    
+    def _eval(self,code):
         """Main part of the interpreter, runs the Brainfuck code."""
         p = 0
         while p < len(code):
@@ -36,10 +41,11 @@ class BrainFuck:
                 self.memory_pointer += 1
                 # not enough space
                 if len(self.memory) == self.memory_pointer:
-                    self.memory += [0]
+                    self.memory += bytearray([0])
             # move left
             if code[p] == '<':
-                self.memory_pointer -= 1
+                if self.memory_pointer > 0:
+                    self.memory_pointer -= 1
             # increase value
             if code[p] == '+':
                 self.memory[self.memory_pointer] += 1
@@ -54,17 +60,17 @@ class BrainFuck:
                     self.memory[self.memory_pointer] = 255
             # print value
             if code[p] == '.':
-                print(chr(code[p]),end=r'')
+                print(chr(self.memory[self.memory_pointer]),end=r'')
             # read value
             if code[p] == ',':
-                code[p] = self._readchar()
+                self.memory[self.memory_pointer] = ord(self._readchar())
             # start loop
             if code[p] == '[':
                 # get the code inside loop
                 loopcode = self._getloopcode(code[p:])
                 # run it until zero
                 while self.memory[self.memory_pointer] != 0:
-                    self.run(loopcode)
+                    self._eval(loopcode)
                 # move the code pointer (closing ] is +1)
                 p += len(loopcode) + 1
             
@@ -84,7 +90,7 @@ class BrainFuck:
         """Read frou previously saved input or from stdin if there is no such thing."""
         # no input defined or left
         if len(self.user_input) == 0:
-            return ord(sys.stdin.read(1))
+            return sys.stdin.read(1)
         # still some input
         else:
             ret = self.user_input[0]
@@ -114,4 +120,8 @@ class BrainCopter():
         # ...to give to the Brainfuck interpreter
         self.program = BrainFuck(self.data)
 
-
+#
+# just for testing
+#
+if __name__ == '__main__':
+    BrainFuck(',<<<<><><.').run()
