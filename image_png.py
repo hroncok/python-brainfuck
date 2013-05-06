@@ -17,6 +17,20 @@ class PngReader():
     
     def __init__(self, filepath):
         
-        # RGB-data obrázku jako seznam seznamů řádek,
-        #   v každé řádce co pixel, to trojce (R, G, B)
+        # RGB-data from image as a list of rows,
+        #   each row contains pixels - triplets of color values
         self.rgb = []
+        
+        # save the data from the file
+        self.binary = open(filepath, mode='rb').read()
+        
+        # check, if it is PNG
+        if (self.binary[0:8] != b'\x89PNG\r\n\x1a\n'):
+            raise PNGWrongHeaderError()
+
+
+#
+# just for testing
+#
+if __name__ == '__main__':
+    PngReader('test_data/HelloWorld.png')
