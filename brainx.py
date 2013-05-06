@@ -108,12 +108,13 @@ class BrainFuck:
         
         # there was !
         if p+1 < len(self.code):
+            ret = self.code[p+1:]
             # cut it out of the code
             self.code = self.code[:p]
-            return self.code[p+1:]
+            return ret
         
         # no input
-        return ""
+        return ''
 
 class BrainLoller():
     """BrainLoller preprocessor."""
