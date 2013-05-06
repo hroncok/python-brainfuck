@@ -57,13 +57,20 @@ class PngReader():
         return self
     
     def _get_size(self):
-        """Reads image width and height from IHDR."""
+        """Reads image width and height from IHDR. Also checks, if this image is supported."""
         for chunk in self.data:
             if (chunk['head'] == b'IHDR'):
                 ihdr = chunk['data']
                 break
         self.width = self._bytes_to_num(ihdr[0:4]);
         self.height = self._bytes_to_num(ihdr[4:8]);
+        # check if this is the right type of PNG
+        if self._bytes_to_num(ihdr[8:9]) != 8 \
+        or self._bytes_to_num(ihdr[9:10]) != 2 \
+        or self._bytes_to_num(ihdr[10:11]) != 0 \
+        or self._bytes_to_num(ihdr[11:12]) != 0 \
+        or self._bytes_to_num(ihdr[12:13]) != 0:
+            raise PNGNotImplementedError()
         return self;
     
     def _get_idat(self):
@@ -114,10 +121,7 @@ class PngReader():
             left_pixel = (0,0,0) # when no such thing is, this should be used
             upleft_pixel = (0,0,0) # when no such thing is, this should be used
             for column in range(0,self.width):
-                try:
-                    pixel = (idat[p],idat[p+1],idat[p+2])
-                except:
-                    raise PNGNotImplementedError()
+                pixel = (idat[p],idat[p+1],idat[p+2])
                 p += 3
                 # http://www.w3.org/TR/PNG-Filters.html
                 if (png_filter == 0):
