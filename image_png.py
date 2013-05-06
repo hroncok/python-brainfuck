@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import zlib
 
 class PNGWrongHeaderError(Exception):
     """Exception, that says the input file is probably not PNG file."""
@@ -55,19 +55,14 @@ class PngReader():
             p += l+8
         return self
     
-    def _get_ihdr():
+    def _get_size(self):
         for chunk in self.data:
             if (chunk['head'] == b'IHDR'):
-                ihdr_data = chunk['data']
+                ihdr = chunk['data']
                 break
-        
-        return {'width':self._bytes_to_num(ihdr_data[0:4]),
-                'height':self._bytes_to_num(ihdr_data[4:8]),
-                'depth':self._bytes_to_num(ihdr_data[8:9]),
-                'color':self._bytes_to_num(ihdr_data[9:10]),
-                'compress':self._bytes_to_num(ihdr_data[10:11]),
-                'filter':self._bytes_to_num(ihdr_data[11:12]),
-                'interleacing':self._bytes_to_num(ihdr_data[12:13])}
+        self.width = self._bytes_to_num(ihdr[0:4]);
+        self.height = self._bytes_to_num(ihdr[4:8]);
+        return self;
 
 
 #
