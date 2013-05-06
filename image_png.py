@@ -24,13 +24,13 @@ class PngReader():
         # save the data from the file
         self.binary = open(filepath, mode='rb').read()
         
-        self._parse_png()
+        self._save()
             
     def _check_png(self):
         """Checks, if it is PNG, strip theheader."""
         if (self.binary[:8] != b'\x89PNG\r\n\x1a\n'):
             raise PNGWrongHeaderError()
-            self.binary = self.binary[8:]
+        self.binary = self.binary[8:]
         return self
     
     def _bytes_to_num(self,bytes):
@@ -63,7 +63,21 @@ class PngReader():
         self.width = self._bytes_to_num(ihdr[0:4]);
         self.height = self._bytes_to_num(ihdr[4:8]);
         return self;
+    
+    def _get_idat(self):
+        idat = b''
+        for chunk in self.data:
+            if (chunk['head'] == b'IDAT'):
+                idat += chunk['data']
+        
+        return zlib.decompress(idat)
 
+    def _save(self):
+        self._parse_png()
+        self._get_size()
+        idat = self._get_idat()
+
+        return self
 
 #
 # just for testing
