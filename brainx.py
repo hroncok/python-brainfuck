@@ -202,7 +202,7 @@ class BrainCopter(BrainLoller):
 #
 if __name__ == '__main__':
     from optparse import OptionParser
-    parser = OptionParser(usage='usage: %prog [options] FILE', version="%prog 0.0")
+    parser = OptionParser(usage='usage: %prog [options] FILE', version="%prog 1.0")
     parser.add_option('-b', '--brainfuck', action='store_true', dest='fuck',
                         help='use the BrainFuck interpreter [default]')
     parser.add_option('-l', '--brainloller', action='store_true', dest='loller',
