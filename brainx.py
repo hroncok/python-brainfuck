@@ -8,9 +8,6 @@ class BrainFuck:
     def __init__(self, data, memory=b'\x00', memory_pointer=0):
         """Brainfuck interpreter initialization."""
         
-        # program data
-        self.data = data
-        
         # variables init
         self.memory = bytearray(memory)
         self.memory_pointer = memory_pointer
