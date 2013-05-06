@@ -24,9 +24,35 @@ class PngReader():
         # save the data from the file
         self.binary = open(filepath, mode='rb').read()
         
-        # check, if it is PNG
-        if (self.binary[0:8] != b'\x89PNG\r\n\x1a\n'):
+        self._check_png()._parse_png()
+            
+    def _check_png(self):
+        """Checks, if it is PNG, strip theheader."""
+        if (self.binary[:8] != b'\x89PNG\r\n\x1a\n'):
             raise PNGWrongHeaderError()
+            self.binary = self.binary[8:]
+        return self
+    
+    def _bytes_to_num(self,bytes):
+        n = 0
+        for b in bytes:
+            n = n*256 + b
+        return n
+    
+    def _parse_png(self):
+        p = 0
+        self.data = []
+        while p < len(self.binary):
+            l = self._bytes_to_num(self.binary[p:p+4])
+            p += 4
+            
+            self.data += [{'head':self.binary[p:p+4],
+                           'length':l,
+                           'data':self.binary[p+4:p+l+4],
+                           'crc':self.binary[p+l+4:p+l+8]}]
+            
+            p += l+8
+        return self
 
 
 #
