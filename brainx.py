@@ -147,27 +147,66 @@ class BrainLoller():
             if rgb[p[0]][p[1]] == (128,128,0):
                 ret += ']'
             if rgb[p[0]][p[1]] == (0,255,255): # turn right
-                if m[0] == 0:
-                    m = m[1], m[0]
-                else:
-                    m = m[1], -m[0]
+                m = self._turn(m,"right")
             if rgb[p[0]][p[1]] == (0,128,128): # turn left
-                if m[0] != 0:
-                    m = m[1], m[0]
-                else:
-                    m = -m[1], m[0]
+                m = self._turn(m,"left")
             # move
             p = p[0]+m[0], p[1]+m[1]
         return ret
+    
+    def _turn(self,movement_vector,direction):
+        """For given direction (left or right) returns turned movement vector."""
+        if direction == "right":
+            if movement_vector[0] == 0:
+                return movement_vector[1], movement_vector[0]
+            else:
+                return movement_vector[1], -movement_vector[0]
+        if direction == "left":
+            if movement_vector[0] != 0:
+                return movement_vector[1], movement_vector[0]
+            else:
+                return -movement_vector[1], movement_vector[0]
 
 
 class BrainCopter(BrainLoller):
     """BrainCopter preprocessor."""
-    
+    def _getcode(self,filename):
+        """Parse the given image and outputs a BrainFuck code."""
+        rgb = png(filename).rgb
+        p = 0, 0 # starting point
+        m = 0, 1 # movment vector (starts east)
+        ret = ''
+        while True:
+            if p[0] == len(rgb) or p[1] == len(rgb[0]) or p[0] < 0 or p[1] < 0: # out of border check
+                break
+            command = (-2*rgb[p[0]][p[1]][0] + 3*rgb[p[0]][p[1]][1] + rgb[p[0]][p[1]][2])%11
+            if command == 0:
+                ret += '>'
+            if command == 1:
+                ret += '<'
+            if command == 2:
+                ret += '+'
+            if command == 3:
+                ret += '-'
+            if command == 4:
+                ret += '.'
+            if command == 5:
+                ret += ','
+            if command == 6:
+                ret += '['
+            if command == 7:
+                ret += ']'
+            if command == 8: # turn right
+                m = self._turn(m,"right")
+            if command == 9: # turn left
+                m = self._turn(m,"left")
+            # move
+            p = p[0]+m[0], p[1]+m[1]
+        return ret
     
 
 #
 # just for testing
 #
 if __name__ == '__main__':
-    BrainCopter("test_data/HelloWorld.png")
+    BrainLoller("test_data/HelloWorld.png")
