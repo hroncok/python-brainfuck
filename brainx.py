@@ -25,7 +25,32 @@ class BrainFuck:
     def get_memory(self):
         # Don't forget to change this according to your implementation
         return self.memory
-
+    
+    def eval(self,code):
+        """Main part of the interpreter, runs the Brainfuck code."""
+        p = 0
+        while p < len(code):
+            # move right
+            if code[p] == '>':
+                self.memory_pointer += 1
+                # not enough space
+                if len(self.memory) == self.memory_pointer:
+                    self.memory += [0]
+            # move left
+            if code[p] == '<':
+                self.memory_pointer -= 1
+            # increase value
+            if code[p] == '+':
+                self.memory_pointer[p] += 1
+                # overflow
+                if self.memory_pointer[p] == 256:
+                    self.memory_pointer[p] = 0
+            # decrease value
+            if code[p] == '-':
+                self.memory_pointer[p] -= 1
+                # overflow
+                if self.memory_pointer[p] == -1:
+                    self.memory_pointer[p] = 255
 
 class BrainLoller():
     """BrainLoller preprocessor."""
