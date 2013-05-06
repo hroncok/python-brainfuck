@@ -13,7 +13,7 @@ class BrainFuck:
         self.memory = bytearray(memory)
         self.memory_pointer = memory_pointer
         self.code = data
-        self.user_input = self._findinput(self.code)
+        self.user_input = self._findinput()
         self.output = ""
         
         # DEBUG and tests
@@ -94,18 +94,18 @@ class BrainFuck:
             self.user_input = self.user_input[1:]
             return ret
     
-    def _findinput(self,code):
+    def _findinput(self):
         """If there is an input after ! save it and cut it out of the code."""
         # find !
         p = 0
-        while p < len(code) and code[p] != '!':
+        while p < len(self.code) and self.code[p] != '!':
             p += 1
         
         # there was !
-        if p+1 < len(code):
+        if p+1 < len(self.code):
             # cut it out of the code
-            self.code = code[:p]
-            return code[p+1:]
+            self.code = self.code[:p]
+            return self.code[p+1:]
         
         # no input
         return ""
@@ -196,5 +196,5 @@ class BrainCopter(BrainLoller):
 # just for testing
 #
 if __name__ == '__main__':
-    #BrainLoller("test_data/HelloWorld.png")
-    BrainCopter("test_data/lk.png")
+    BrainLoller("test_data/HelloWorld.png")
+    #BrainCopter("test_data/lk.png")
