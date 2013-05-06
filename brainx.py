@@ -12,7 +12,14 @@ class BrainFuck:
         # variables init
         self.memory = bytearray(memory)
         self.memory_pointer = memory_pointer
-        self.code = data
+        
+        # let's see if the given data is code or file, let's hope, it's not both :)
+        try:
+            with open(data, mode='r') as f:
+                self.code = f.read()
+        except:
+            self.code = data
+        
         self.user_input = self._findinput()
         self.output = ""
         
@@ -196,5 +203,6 @@ class BrainCopter(BrainLoller):
 # just for testing
 #
 if __name__ == '__main__':
-    BrainLoller("test_data/HelloWorld.png")
+    BrainFuck("test_data/hello1.b")
+    #BrainLoller("test_data/HelloWorld.png")
     #BrainCopter("test_data/lk.png")
