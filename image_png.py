@@ -3,17 +3,17 @@
 
 
 class PNGWrongHeaderError(Exception):
-    """Výjimka oznamující, že načítaný soubor zřejmě není PNG-obrázkem."""
+    """Exception, that says the input file is probably not PNG file."""
     pass
 
 
 class PNGNotImplementedError(Exception):
-    """Výjimka oznamující, že PNG-obrázek má strukturu, kterou neumíme zpracovat."""
+    """Exception, that says the PNG image has a structure we cannot process."""
     pass
 
 
 class PngReader():
-    """Třída pro práci s PNG-obrázky."""
+    """Class for reading PNG images."""
     
     def __init__(self, filepath):
         

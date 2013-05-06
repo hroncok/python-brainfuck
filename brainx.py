@@ -3,51 +3,51 @@
 
 
 class BrainFuck:
-    """Interpretr jazyka brainfuck."""
+    """Brainfuck interpreter."""
     
     def __init__(self, data, memory=b'\x00', memory_pointer=0):
-        """Inicializace interpretru brainfucku."""
+        """Brainfuck interpreter initialization."""
         
-        # data programu
+        # program data
         self.data = data
         
-        # inicializace proměnných
+        # variables init
         self.memory = memory
         self.memory_pointer = memory_pointer
         
-        # DEBUG a testy
-        # a) paměť výstupu
+        # DEBUG and tests
+        # a) output memory
         self.output = ''
     
     #
-    # pro potřeby testů
+    # for tests
     #
     def get_memory(self):
-        # Nezapomeňte upravit získání návratové hodnoty podle vaší implementace!
+        # Don't forget to change this according to your implementation
         return self.memory
 
 
 class BrainLoller():
-    """Třída pro zpracování jazyka brainloller."""
+    """BrainLoller preprocessor."""
     
     def __init__(self, filename):
-        """Inicializace interpretru brainlolleru."""
+        """BrainLoller preprocessor initialization."""
         
-        # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
+        # self.data contains decoded Brainfuck code..
         self.data = ''
-        # ..který pak předhodíme interpretru
+        # ...to give to the Brainfuck interpreter
         self.program = BrainFuck(self.data)
 
 
 class BrainCopter():
-    """Třída pro zpracování jazyka braincopter."""
+    """BrainCopter preprocessor."""
     
     def __init__(self, filename):
-        """Inicializace interpretru braincopteru."""
+        """BrainCopter preprocessor initialization."""
         
-        # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
+        # self.data contains decoded Brainfuck code..
         self.data = ''
-        # ..který pak předhodíme interpretru
+        # ...to give to the Brainfuck interpreter
         self.program = BrainFuck(self.data)
 
 

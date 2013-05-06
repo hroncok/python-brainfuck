@@ -2,17 +2,16 @@
 # -*- coding: utf-8 -*-
 
 
-# import modulu zodpovědného za testy jednotek
 import unittest
 
-# import testovaných modulů
+# tested modules
 import brainx
 import image_png
 
 
 
 #
-# třída s dočasným „falešným“ výstupem
+# Class with temporary fake output
 #
 
 import sys
@@ -26,11 +25,11 @@ class FakeStdOut:
 
 
 #
-# třídy obsahující testy
+# Classes with tests
 #
 
 class TestBrainfuck(unittest.TestCase):
-    """testuje chování interpretru brainfucku"""
+    """Tests the Brainfuck interpreter."""
     
     def setUp(self):
         self.BF = brainx.BrainFuck
@@ -42,49 +41,49 @@ class TestBrainfuck(unittest.TestCase):
         sys.stdout = self.out
    
     def test_bf_01(self):
-        """vynulování aktuální, ale pouze aktuální, buňky"""
+        """zero current cell"""
         program = self.BF('[-]', memory=b'\x03\x02', memory_pointer=1)
         self.assertEqual(program.get_memory(), b'\x03\x00')
     
     def test_bf_02(self):
-        """vynulování všech nenulových buněk doleva"""
+        """zero all non-zero cells to left"""
         program = self.BF('[[-]<]', memory=b'\x03\x03\x00\x02\x02', memory_pointer=4)
         self.assertEqual(program.get_memory(), b'\x03\x03\x00\x00\x00')
     
     def test_bf_03(self):
-        """přesun na první nenulovou buňku doleva"""
+        """move to the first non-zero cell to left"""
         program = self.BF('[<]', memory=b'\x03\x03\x00\x02\x02', memory_pointer=4)
         self.assertEqual(program.memory_pointer, 2)
     
     def test_bf_04(self):
-        """přesun na první nenulovou buňku doprava"""
+        """move to the first non-zero cell to right"""
         program = self.BF('[>]', memory=b'\x03\x03\x00\x02\x02')
         self.assertEqual(program.memory_pointer, 2)
     
     def test_bf_05(self):
-        """destruktivní přičtení aktuální buňky k buňce následující"""
+        """destructive addition of the current cell to the next one"""
         program = self.BF('[>+<-]', memory=b'\x03\x03')
         self.assertEqual(program.get_memory(), b'\x00\x06')
     
     def test_bf_06(self):
-        """nedestruktivní přičtení aktuální buňky k buňce následující"""
+        """non-destructive addition of the current cell to the next one"""
         program = self.BF('[>+>+<<-]>>[<<+>>-]', memory=b'\x03\x03')
         self.assertEqual(program.get_memory(), b'\x03\x06\x00')
     
     def test_bf_07(self):
-        """destruktivní odečtení aktuální buňky od buňky následující"""
+        """destructive removeal of the current cell from the next one"""
         program = self.BF('[>-<-]', memory=b'\x03\x05')
         self.assertEqual(program.get_memory(), b'\x00\x02')
     
     def test_bf_11(self):
-        r"""HelloWorld s \n"""
+        r"""HelloWorld with \n"""
         with open( 'test_data/hello1.b', encoding='ascii' ) as stream:
             data = stream.read()
         program = self.BF(data)
         self.assertEqual(program.output, 'Hello World!\n')
     
     def test_bf_12(self):
-        r"""HelloWorld bez \n"""
+        r"""HelloWorld without \n"""
         with open( 'test_data/hello2.b', encoding='ascii' ) as stream:
             data = stream.read()
         program = self.BF(data)
@@ -92,7 +91,7 @@ class TestBrainfuck(unittest.TestCase):
 
 
 class TestBrainfuckWithInput(unittest.TestCase):
-    """testuje chování interpretru brainfucku pro programy se vstupem"""
+    """Tests the Brainfuck interpreter using programs with defined input."""
     
     def setUp(self):
         self.BF = brainx.BrainFuck
@@ -104,7 +103,7 @@ class TestBrainfuckWithInput(unittest.TestCase):
         sys.stdout = self.out
     
     def test_bf_input_2(self):
-        """numwarp.b pro vstup '123'"""
+        """numwarp.b with '123' input"""
         with open( 'test_data/numwarp_input.b', encoding='ascii' ) as stream:
             data = stream.read()
         program = self.BF(data)
@@ -112,7 +111,7 @@ class TestBrainfuckWithInput(unittest.TestCase):
 
 
 class TestPNG(unittest.TestCase):
-    """testuje korektní načítání podmnožiny PNG-obrázků"""
+    """Tests correct load of PNG images."""
     
     def setUp(self):
         self.png = image_png.PngReader
@@ -124,26 +123,26 @@ class TestPNG(unittest.TestCase):
         sys.stdout = self.out
     
     def test_png_01(self):
-        """umíme jen PNG"""
+        """only support PNGs"""
         self.assertRaises( image_png.PNGWrongHeaderError, self.png, 'test_data/sachovnice.jpg' )
     
     def test_png_02(self):
-        """umíme jen některá PNG"""
+        """only support some PNGs"""
         self.assertRaises( image_png.PNGNotImplementedError, self.png, 'test_data/sachovnice_paleta.png' )
     
     def test_png_03(self):
-        """načtení jednoduchého PNG-obrázku"""
+        """simple PNG load"""
         image = self.png('test_data/sachovnice.png')
         self.assertEqual( image.rgb, [[(255, 0, 0), (0, 255, 0), (0, 0, 255)], [(255, 255, 255), (127, 127, 127), (0, 0, 0)], [(255, 255, 0), (255, 0, 255), (0, 255, 255)]] )
 
 
 class TestBrainloller(unittest.TestCase):
-    """testuje chování interpretru brainlolleru"""
+    """Tests the BrainLoller interpreter."""
     
     def setUp(self):
         self.BF = brainx.BrainFuck
         self.BL = brainx.BrainLoller
-        # skrytí výstupu
+        # hide output
         self.out = sys.stdout
         sys.stdout = FakeStdOut()
     
@@ -151,18 +150,18 @@ class TestBrainloller(unittest.TestCase):
         sys.stdout = self.out
     
     def test_bl_1a(self):
-        """načtení dat z obrázku HelloWorld.png"""
-        objekt = self.BL('test_data/HelloWorld.png')
-        self.assertEqual(objekt.data, '>+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.>>>++++++++[<++++>-]<.>>>++++++++++[<+++++++++>-]<---.<<<<.+++.------.--------.>>+.')
+        """load data from HelloWorld.png image"""
+        obj = self.BL('test_data/HelloWorld.png')
+        self.assertEqual(obj.data, '>+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.>>>++++++++[<++++>-]<.>>>++++++++++[<+++++++++>-]<---.<<<<.+++.------.--------.>>+.')
     
     def test_bl_1b(self):
-        """vykonání programu z obrázku HelloWorld.png"""
-        objekt = self.BL('test_data/HelloWorld.png')
-        self.assertEqual(objekt.program.output, 'Hello World!')
+        """run the program from HelloWorld.png image"""
+        obj = self.BL('test_data/HelloWorld.png')
+        self.assertEqual(obj.program.output, 'Hello World!')
 
 
 #
-# zajištění spuštění testů při zavolání souboru z příkazové řádky
+# Run the tests when this script is run
 #
 if __name__ == '__main__':
     unittest.main()
