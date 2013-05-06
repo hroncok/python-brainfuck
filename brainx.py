@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from image_png import PngReader as png
+from optparse import OptionParser
 
 class BrainFuck:
     """Brainfuck interpreter."""
@@ -203,6 +204,34 @@ class BrainCopter(BrainLoller):
 # just for testing
 #
 if __name__ == '__main__':
-    BrainFuck("test_data/hello1.b")
-    #BrainLoller("test_data/HelloWorld.png")
-    #BrainCopter("test_data/lk.png")
+    parser = OptionParser(usage='usage: %prog [options] FILE', version="%prog 0.0")
+    parser.add_option('-b', '--brainfuck', action='store_true', dest='fuck',
+                        help='use the BrainFuck interpreter [default]')
+    parser.add_option('-l', '--brainloller', action='store_true', dest='loller',
+                        help='use the BrainLoller interpreter')
+    parser.add_option('-c', '--copter', action='store_true', dest='copter',
+                        help='use the BrainCopter interpreter')
+    (options, args) = parser.parse_args()
+    if len(args) < 1:
+        parser.error('to few arguments')
+    if options.fuck and options.copter and options.loller:
+        parser.error('options --brainfuck, --brainloller and --braincopter are mutually exclusive')
+    if options.loller and options.copter:
+        parser.error('options --brainloller and --braincopter are mutually exclusive')
+    if options.fuck and options.loller:
+        parser.error('options --brainfuck and --brainloller are mutually exclusive')
+    if options.fuck and options.copter:
+        parser.error('options --brainfuck and --braincopter are mutually exclusive')
+    
+    try:
+        with open(args[0]): pass
+    except IOError:
+        parser.error(args[0]+' is not a file or it cannot be opened')
+    
+    if options.loller:
+        BrainLoller(args[0])
+    elif options.copter:
+        BrainCopter(args[0])
+    else:
+        BrainFuck(args[0])
+        
