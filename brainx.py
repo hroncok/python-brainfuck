@@ -86,7 +86,7 @@ class BrainFuck:
         return code[1:end-1]
     
     def _readchar(self):
-        """Read frou previously saved input or from stdin if there is no such thing."""
+        """Read from previously saved input or from stdin if there is no such thing."""
         # no input defined or left
         if len(self.user_input) == 0:
             return sys.stdin.read(1)
