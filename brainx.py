@@ -166,6 +166,7 @@ class BrainLoller():
                 return -movement_vector[1], movement_vector[0]
     
     def _out(self,rgb,p):
+        """Is the given coordinate p out of the 2D array rgb?"""
         return p[0] == len(rgb) or p[1] == len(rgb[0]) or p[0] < 0 or p[1] < 0
 
 
