@@ -127,9 +127,7 @@ class BrainLoller():
         p = 0, 0 # starting point
         m = 0, 1 # movment vector (starts east)
         ret = ''
-        while True:
-            if p[0] == len(rgb) or p[1] == len(rgb[0]) or p[0] < 0 or p[1] < 0: # out of border check
-                break
+        while not self._out(rgb,p):
             if rgb[p[0]][p[1]] == (255,0,0):
                 ret += '>'
             if rgb[p[0]][p[1]] == (128,0,0):
@@ -166,6 +164,9 @@ class BrainLoller():
                 return movement_vector[1], movement_vector[0]
             else:
                 return -movement_vector[1], movement_vector[0]
+    
+    def _out(self,rgb,p):
+        return p[0] == len(rgb) or p[1] == len(rgb[0]) or p[0] < 0 or p[1] < 0
 
 
 class BrainCopter(BrainLoller):
@@ -176,9 +177,7 @@ class BrainCopter(BrainLoller):
         p = 0, 0 # starting point
         m = 0, 1 # movment vector (starts east)
         ret = ''
-        while True:
-            if p[0] == len(rgb) or p[1] == len(rgb[0]) or p[0] < 0 or p[1] < 0: # out of border check
-                break
+        while not self._out(rgb,p):
             command = (-2*rgb[p[0]][p[1]][0] + 3*rgb[p[0]][p[1]][1] + rgb[p[0]][p[1]][2])%11
             if command == 0:
                 ret += '>'
