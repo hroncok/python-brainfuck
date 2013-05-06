@@ -71,11 +71,66 @@ class PngReader():
                 idat += chunk['data']
         
         return zlib.decompress(idat)
-
+    
+    def _plus(self,a,b):
+        return ((a[0]+b[0])%256,(a[1]+b[1])%256,(a[2]+b[2])%256)
+    
+    def _paeth_predictor(self,a,b,c):
+        # a = left, b = above, c = upper left
+        res = tuple()
+        for i in range(0,3):
+            p = (a[i]+b[i]-c[i]) # initial estimate
+            pa = abs(p-a[i]) # distances to a, b, c
+            pb = abs(p-b[i])
+            pc = abs(p-c[i])
+        
+        
+            # return nearest of a,b,c,
+            # breaking ties in order a,b,c.
+            if (pa <= pb and pa <= pc):
+                res += (a[i],)
+            elif (pb <= pc):
+                res += (b[i],)
+            else:
+                res += (c[i],)
+        return res
+    
     def _save(self):
-        self._parse_png()
-        self._get_size()
+        self._parse_png()._get_size()
         idat = self._get_idat()
+
+        self.rgb = []
+        p = 0
+        for row in range(0,self.height):
+            png_filter = idat[p]
+            p += 1
+            line = []
+            left_pixel = (0,0,0) # when no such thing is, this should be used
+            upleft_pixel = (0,0,0) # when no such thing is, this should be used
+            for column in range(0,self.width):
+                pixel = (idat[p],idat[p+1],idat[p+2])
+                p += 3
+                # http://www.w3.org/TR/PNG-Filters.html
+                if (png_filter == 0):
+                    # None
+                    line += [pixel]
+                elif (png_filter == 1):
+                    # Sub
+                    left_pixel = self._plus(left_pixel,pixel)
+                    line += [left_pixel]
+                elif (png_filter == 2):
+                    # Up
+                    line += [self._plus(pixel,self.rgb[len(self.rgb)-1][column])]
+                #elif (png_filter == 3):
+                    # Average (not used)
+                elif (png_filter == 4):
+                    # Paeth
+                    up_pixel = self.rgb[len(self.rgb)-1][column]
+                    current = self._plus(pixel,self._paeth_predictor(left_pixel,up_pixel,upleft_pixel))
+                    line += [current]
+                    left_pixel = current
+                    upleft_pixel = up_pixel
+            self.rgb += [line]
 
         return self
 
