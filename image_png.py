@@ -63,6 +63,7 @@ class PngReader():
                 break
         self.width = self._bytes_to_num(ihdr[0:4]);
         self.height = self._bytes_to_num(ihdr[4:8]);
+        print(self.width,self.height)
         return self;
     
     def _get_idat(self):
@@ -109,7 +110,10 @@ class PngReader():
             left_pixel = (0,0,0) # when no such thing is, this should be used
             upleft_pixel = (0,0,0) # when no such thing is, this should be used
             for column in range(0,self.width):
-                pixel = (idat[p],idat[p+1],idat[p+2])
+                try:
+                    pixel = (idat[p],idat[p+1],idat[p+2])
+                except:
+                    raise PNGNotImplementedError()
                 p += 3
                 # http://www.w3.org/TR/PNG-Filters.html
                 if (png_filter == 0):
@@ -139,4 +143,4 @@ class PngReader():
 # just for testing
 #
 if __name__ == '__main__':
-    PngReader('test_data/HelloWorld.png')
+    PngReader('test_data/sachovnice_paleta.png')
