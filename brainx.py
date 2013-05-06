@@ -161,19 +161,13 @@ class BrainLoller():
         return ret
 
 
-class BrainCopter():
+class BrainCopter(BrainLoller):
     """BrainCopter preprocessor."""
     
-    def __init__(self, filename):
-        """BrainCopter preprocessor initialization."""
-        
-        # self.data contains decoded Brainfuck code..
-        self.data = ''
-        # ...to give to the Brainfuck interpreter
-        self.program = BrainFuck(self.data)
+    
 
 #
 # just for testing
 #
 if __name__ == '__main__':
-    BrainLoller("test_data/HelloWorld.png")
+    BrainCopter("test_data/HelloWorld.png")
