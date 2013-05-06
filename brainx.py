@@ -125,7 +125,7 @@ class BrainLoller():
         """Parse the given image and outputs a BrainFuck code."""
         rgb = png(filename).rgb
         p = 0, 0 # starting point
-        m = 0, 1 # movment vector (starts east)
+        m = 0, 1 # movement vector (starts east)
         ret = ''
         while not self._out(rgb,p):
             o, m = self._logic(rgb[p[0]][p[1]],m)
