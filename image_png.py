@@ -126,6 +126,7 @@ class PngReader():
                 # http://www.w3.org/TR/PNG-Filters.html
                 if (png_filter == 0):
                     # None
+                    left_pixel = pixel
                     line += [pixel]
                 elif (png_filter == 1):
                     # Sub
@@ -133,7 +134,8 @@ class PngReader():
                     line += [left_pixel]
                 elif (png_filter == 2):
                     # Up
-                    line += [self._plus(pixel,self.rgb[len(self.rgb)-1][column])]
+                    left_pixel = self._plus(pixel,self.rgb[len(self.rgb)-1][column])
+                    line += [left_pixel]
                 #elif (png_filter == 3):
                     # Average (not used)
                 elif (png_filter == 4):
